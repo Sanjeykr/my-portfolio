@@ -103,6 +103,11 @@ const CERTIFICATIONS = [
     issuer: "Amazon Web Services",
     status: "In Progress",
   },
+  {
+    name: "CompTIA Security+",
+    issuer: "CompTIA",
+    status: "In Progress"
+  }
 ];
 
 // ─────────────────────────────────────────────────────────────
