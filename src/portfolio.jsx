@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 // ─────────────────────────────────────────────────────────────
 
 const ME = {
-  name: "Sanjey Rajkumar",
+  name: "Sanjey Krishna Rajkumar",
   title: "Data Analytics & AI Integration",
   tagline: "Information Systems graduate specialising in Big Data. I build AI-driven apps, interactive dashboards, and turn complex data into clear decisions.",
   email: "sanjeyraj2003@gmail.com",
@@ -92,26 +92,99 @@ const EXPERIENCE = [
   },
 ];
 
+// Education + Certifications combined
+const EDUCATION = [
+  {
+    degree: "Bachelor of Information Systems",
+    school: "Western Sydney University · Data Science",
+    period: "2022 – 2025",
+    badge: "completed",
+  },
+  {
+    degree: "Master's Degree",
+    school: "Data Science / Cybersecurity — still deciding",
+    period: "Planned · Future",
+    badge: "upcoming",
+  },
+];
+
 const CERTIFICATIONS = [
-  {
-    name: "Power BI Data Analyst Associate",
-    issuer: "Microsoft",
-    status: "In Progress",
-  },
-  {
-    name: "AWS Certified AI Practitioner",
-    issuer: "Amazon Web Services",
-    status: "In Progress",
-  },
-  {
-    name: "CompTIA Security+",
-    issuer: "CompTIA",
-    status: "In Progress"
-  }
+  { name: "Power BI Data Analyst Associate", issuer: "Microsoft" },
+  { name: "AWS Certified AI Practitioner", issuer: "Amazon Web Services" },
+  { name: "CompTIA Security+", issuer: "CompTIA" },
 ];
 
 // ─────────────────────────────────────────────────────────────
-//  COMPONENT
+//  MATRIX CANVAS
+// ─────────────────────────────────────────────────────────────
+
+function MatrixCanvas() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let animId;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const fontSize = 13;
+    let cols = Math.floor(canvas.width / fontSize);
+    let drops = Array(cols).fill(1);
+
+    const draw = () => {
+      ctx.fillStyle = "rgba(13,13,13,0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      cols = Math.floor(canvas.width / fontSize);
+      if (drops.length !== cols) drops = Array(cols).fill(1);
+
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        // mix blue and green for data + security feel
+        const useBlue = Math.random() > 0.6;
+        ctx.fillStyle = useBlue ? "rgba(79,158,255,0.7)" : "rgba(0,255,100,0.5)";
+        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    };
+
+    const interval = setInterval(draw, 45);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        opacity: 0.35,
+        pointerEvents: "none",
+      }}
+    />
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SECTION WRAPPER
 // ─────────────────────────────────────────────────────────────
 
 function Section({ id, children }) {
@@ -120,7 +193,7 @@ function Section({ id, children }) {
   useEffect(() => {
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { threshold: 0.1 }
+      { threshold: 0.08 }
     );
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
@@ -134,7 +207,7 @@ function Section({ id, children }) {
         transform: visible ? "none" : "translateY(28px)",
         transition: "opacity 0.7s ease, transform 0.7s ease",
         padding: "5rem 0",
-        borderTop: "1px solid #222",
+        borderTop: "1px solid #252525",
       }}
     >
       {children}
@@ -142,10 +215,14 @@ function Section({ id, children }) {
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+//  MAIN COMPONENT
+// ─────────────────────────────────────────────────────────────
+
 export default function Portfolio() {
   const [navBg, setNavBg] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [lightbox, setLightbox] = useState(null); // { src, caption }
+  const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
     const fn = () => setNavBg(window.scrollY > 50);
@@ -158,7 +235,7 @@ export default function Portfolio() {
     setMenuOpen(false);
   };
 
-  const NAV = ["about", "projects", "experience", "certifications", "contact"];
+  const NAV = ["about", "projects", "experience", "education", "contact"];
 
   return (
     <>
@@ -167,7 +244,7 @@ export default function Portfolio() {
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { background: #0d0d0d; color: #e8e8e8; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        body { background: #0d0d0d; color: #d4d4d4; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
 
@@ -178,109 +255,113 @@ export default function Portfolio() {
           position: fixed; top: 0; left: 0; right: 0; z-index: 100;
           padding: 0 1.5rem; height: 56px;
           display: flex; align-items: center; justify-content: space-between;
-          background: ${navBg ? "rgba(13,13,13,0.9)" : "transparent"};
-          backdrop-filter: ${navBg ? "blur(12px)" : "none"};
-          border-bottom: 1px solid ${navBg ? "#1f1f1f" : "transparent"};
+          background: ${navBg ? "rgba(13,13,13,0.92)" : "transparent"};
+          backdrop-filter: ${navBg ? "blur(16px)" : "none"};
+          border-bottom: 1px solid ${navBg ? "#222" : "transparent"};
           transition: background 0.3s, border-color 0.3s;
         }
         .nav-name { font-size: 0.95rem; font-weight: 600; color: #fff; cursor: pointer; }
         .nav-links { display: flex; gap: 0.25rem; list-style: none; }
-        .nav-links button { background: none; border: none; font-family: 'Inter', sans-serif; font-size: 0.82rem; color: #888; padding: 6px 10px; cursor: pointer; border-radius: 6px; transition: color 0.2s, background 0.2s; text-transform: capitalize; }
+        .nav-links button { background: none; border: none; font-family: 'Inter', sans-serif; font-size: 0.82rem; color: #999; padding: 6px 10px; cursor: pointer; border-radius: 6px; transition: color 0.2s, background 0.2s; text-transform: capitalize; }
         .nav-links button:hover { color: #fff; background: #1a1a1a; }
         .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; }
-        .hamburger span { display: block; width: 18px; height: 1.5px; background: #e8e8e8; }
+        .hamburger span { display: block; width: 18px; height: 1.5px; background: #d4d4d4; }
 
         /* MOBILE MENU */
         .mob { display: none; position: fixed; inset: 0; top: 56px; z-index: 99; background: rgba(13,13,13,0.97); flex-direction: column; align-items: center; justify-content: center; gap: 1rem; }
         .mob.open { display: flex; }
-        .mob button { background: none; border: none; font-family: 'Inter', sans-serif; font-size: 1.3rem; font-weight: 500; color: #e8e8e8; cursor: pointer; padding: 0.5rem; transition: color 0.2s; text-transform: capitalize; }
+        .mob button { background: none; border: none; font-family: 'Inter', sans-serif; font-size: 1.3rem; font-weight: 500; color: #d4d4d4; cursor: pointer; padding: 0.5rem; transition: color 0.2s; text-transform: capitalize; }
         .mob button:hover { color: #4f9eff; }
 
         /* HERO */
-        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 56px; }
+        .hero-wrap { position: relative; min-height: 100vh; overflow: hidden; background: #0d0d0d; }
+        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 56px; position: relative; z-index: 1; }
+        .hero-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 200px; background: linear-gradient(transparent, #0d0d0d); z-index: 2; pointer-events: none; }
         .hero-label { font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #4f9eff; margin-bottom: 1.5rem; }
-        .hero-name { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.05; color: #fff; margin-bottom: 1rem; }
-        .hero-title { font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: 300; color: #666; margin-bottom: 1.5rem; }
-        .hero-desc { font-size: 1rem; font-weight: 300; color: #888; line-height: 1.75; max-width: 520px; margin-bottom: 2.5rem; }
+        .hero-name { font-size: clamp(2.4rem, 6vw, 5rem); font-weight: 700; letter-spacing: -1.5px; line-height: 1.05; color: #ffffff; margin-bottom: 1rem; }
+        .hero-title { font-size: clamp(1rem, 2.5vw, 1.3rem); font-weight: 400; color: #aaa; margin-bottom: 1.5rem; }
+        .hero-desc { font-size: 1rem; font-weight: 300; color: #999; line-height: 1.8; max-width: 520px; margin-bottom: 2.5rem; }
         .hero-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 4rem; }
-        .hero-stats { display: flex; gap: 3rem; padding-top: 2.5rem; border-top: 1px solid #1f1f1f; flex-wrap: wrap; }
+        .hero-stats { display: flex; gap: 3rem; padding-top: 2.5rem; border-top: 1px solid #252525; flex-wrap: wrap; }
         .stat-n { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -1px; }
-        .stat-l { font-size: 0.75rem; color: #555; margin-top: 0.2rem; }
+        .stat-l { font-size: 0.78rem; color: #666; margin-top: 0.2rem; }
 
         /* BUTTONS */
-        .btn { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; padding: 11px 24px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn { font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; padding: 11px 24px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: none; }
         .btn-primary { background: #4f9eff; color: #fff; }
         .btn-primary:hover { background: #3a8aee; }
-        .btn-secondary { background: #1a1a1a; color: #e8e8e8; border: 1px solid #2a2a2a; }
+        .btn-secondary { background: #1a1a1a; color: #d4d4d4; border: 1px solid #2e2e2e; }
         .btn-secondary:hover { background: #222; border-color: #444; }
 
         /* SECTION HEADER */
         .sec-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #4f9eff; margin-bottom: 0.5rem; display: block; }
-        .sec-title { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 700; letter-spacing: -0.5px; color: #fff; margin-bottom: 2.5rem; }
+        .sec-title { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 700; letter-spacing: -0.5px; color: #ffffff; margin-bottom: 2.5rem; }
 
         /* ABOUT */
         .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: start; }
-        .about-text p { font-size: 0.95rem; font-weight: 300; line-height: 1.8; color: #888; margin-bottom: 1rem; }
-        .about-text p strong { color: #e8e8e8; font-weight: 500; }
-        .info-card { background: #111; border: 1px solid #222; border-radius: 12px; overflow: hidden; }
-        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1.25rem; border-bottom: 1px solid #1a1a1a; font-size: 0.83rem; }
+        .about-text p { font-size: 0.975rem; font-weight: 300; line-height: 1.85; color: #aaa; margin-bottom: 1.1rem; }
+        .about-text p strong { color: #e8e8e8; font-weight: 600; }
+        .info-card { background: #131313; border: 1px solid #252525; border-radius: 12px; overflow: hidden; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.25rem; border-bottom: 1px solid #1e1e1e; font-size: 0.85rem; }
         .info-row:last-child { border-bottom: none; }
-        .info-k { color: #555; }
-        .info-v { color: #e8e8e8; font-weight: 500; text-align: right; }
+        .info-k { color: #666; }
+        .info-v { color: #e0e0e0; font-weight: 500; text-align: right; }
 
-        /* EDUCATION */
-        .edu-block { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #1f1f1f; }
-        .edu-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #4f9eff; margin-bottom: 1.25rem; }
-        .edu-item { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
-        .edu-dot { width: 8px; height: 8px; border-radius: 50%; background: #4f9eff; margin-top: 6px; flex-shrink: 0; }
-        .edu-degree { font-size: 0.88rem; font-weight: 600; color: #e8e8e8; margin-bottom: 0.2rem; }
-        .edu-school { font-size: 0.8rem; color: #666; margin-bottom: 0.2rem; }
-        .edu-period { font-size: 0.75rem; color: #444; }
-        .edu-badge { display: inline-block; font-size: 0.67rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-top: 0.35rem; }
+        /* PROJECTS */
+        .projects-list { display: grid; gap: 1px; background: #222; border-radius: 12px; overflow: hidden; }
+        .project-item { background: #111; padding: 2rem; transition: background 0.2s; }
+        .project-item:hover { background: #151515; }
+        .proj-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+        .proj-title { font-size: 1.15rem; font-weight: 600; color: #fff; }
+        .proj-tag { font-size: 0.72rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: #4f9eff; background: rgba(79,158,255,0.08); border: 1px solid rgba(79,158,255,0.18); padding: 3px 10px; border-radius: 4px; white-space: nowrap; }
+        .proj-desc { font-size: 0.9rem; font-weight: 300; line-height: 1.75; color: #aaa; margin-bottom: 1rem; }
+        .proj-highlight { font-size: 0.8rem; font-weight: 500; color: #34d399; margin-bottom: 1rem; }
+        .proj-highlight::before { content: '↗  '; }
+        .proj-tech { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .tech-pill { font-size: 0.77rem; padding: 4px 11px; background: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 20px; color: #999; }
+
+        /* EXPERIENCE */
+        .exp-list { display: grid; gap: 1px; background: #222; border-radius: 12px; overflow: hidden; }
+        .exp-item { background: #111; padding: 2rem; display: grid; grid-template-columns: 180px 1fr; gap: 2rem; transition: background 0.2s; }
+        .exp-item:hover { background: #151515; }
+        .exp-co { font-size: 0.85rem; font-weight: 500; color: #e0e0e0; margin-bottom: 0.2rem; }
+        .exp-period { font-size: 0.77rem; color: #666; }
+        .exp-role { font-size: 0.975rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem; }
+        .exp-pts { list-style: none; }
+        .exp-pts li { font-size: 0.875rem; font-weight: 300; color: #aaa; line-height: 1.7; padding: 3px 0 3px 1rem; position: relative; }
+        .exp-pts li::before { content: '–'; position: absolute; left: 0; color: #4f9eff; }
+
+        /* EDUCATION & CERTIFICATIONS */
+        .edu-cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+        .edu-list { display: grid; gap: 1px; background: #222; border-radius: 12px; overflow: hidden; }
+        .edu-item { background: #111; padding: 1.5rem; display: flex; gap: 1rem; transition: background 0.2s; }
+        .edu-item:hover { background: #151515; }
+        .edu-dot { width: 9px; height: 9px; border-radius: 50%; background: #4f9eff; margin-top: 5px; flex-shrink: 0; }
+        .edu-degree { font-size: 0.9rem; font-weight: 600; color: #e0e0e0; margin-bottom: 0.2rem; }
+        .edu-school { font-size: 0.82rem; color: #777; margin-bottom: 0.2rem; }
+        .edu-period { font-size: 0.75rem; color: #555; }
+        .edu-badge { display: inline-block; font-size: 0.67rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-top: 0.4rem; }
         .badge-done { background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
         .badge-future { background: rgba(79,158,255,0.1); color: #4f9eff; border: 1px solid rgba(79,158,255,0.2); }
 
-        /* PROJECTS */
-        .projects-list { display: grid; gap: 1px; background: #1a1a1a; border-radius: 12px; overflow: hidden; }
-        .project-item { background: #111; padding: 2rem; transition: background 0.2s; }
-        .project-item:hover { background: #141414; }
-        .proj-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-        .proj-title { font-size: 1.1rem; font-weight: 600; color: #fff; }
-        .proj-tag { font-size: 0.72rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: #4f9eff; background: rgba(79,158,255,0.08); border: 1px solid rgba(79,158,255,0.15); padding: 3px 10px; border-radius: 4px; white-space: nowrap; }
-        .proj-desc { font-size: 0.87rem; font-weight: 300; line-height: 1.7; color: #777; margin-bottom: 1rem; }
-        .proj-highlight { font-size: 0.78rem; font-weight: 500; color: #34d399; margin-bottom: 1rem; }
-        .proj-highlight::before { content: '↗  '; }
-        .proj-tech { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-        .tech-pill { font-size: 0.75rem; padding: 3px 10px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 20px; color: #888; }
-
-        /* EXPERIENCE */
-        .exp-list { display: grid; gap: 1px; background: #1a1a1a; border-radius: 12px; overflow: hidden; }
-        .exp-item { background: #111; padding: 2rem; display: grid; grid-template-columns: 180px 1fr; gap: 2rem; transition: background 0.2s; }
-        .exp-item:hover { background: #141414; }
-        .exp-co { font-size: 0.82rem; font-weight: 500; color: #e8e8e8; margin-bottom: 0.2rem; }
-        .exp-period { font-size: 0.75rem; color: #555; }
-        .exp-role { font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem; }
-        .exp-pts { list-style: none; }
-        .exp-pts li { font-size: 0.83rem; font-weight: 300; color: #777; line-height: 1.65; padding: 3px 0 3px 1rem; position: relative; }
-        .exp-pts li::before { content: '–'; position: absolute; left: 0; color: #4f9eff; }
-
-        /* CERTIFICATIONS */
-        .cert-list { display: grid; gap: 1rem; margin-bottom: 2rem; }
-        .cert-item { background: #111; border: 1px solid #222; border-radius: 12px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; transition: background 0.2s; }
-        .cert-item:hover { background: #141414; }
-        .cert-name { font-size: 0.9rem; font-weight: 600; color: #e8e8e8; margin-bottom: 0.25rem; }
-        .cert-issuer { font-size: 0.78rem; color: #555; }
-        .cert-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: rgba(245,158,11,0.08); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); white-space: nowrap; }
+        .cert-list { display: grid; gap: 1px; background: #222; border-radius: 12px; overflow: hidden; }
+        .cert-item { background: #111; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; transition: background 0.2s; }
+        .cert-item:hover { background: #151515; }
+        .cert-name { font-size: 0.875rem; font-weight: 600; color: #e0e0e0; margin-bottom: 0.25rem; }
+        .cert-issuer { font-size: 0.78rem; color: #666; }
+        .cert-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: rgba(245,158,11,0.08); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); white-space: nowrap; flex-shrink: 0; }
         .cert-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
+        .subsec-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 1rem; display: block; }
+
         /* CONTACT */
         .contact-links { display: grid; gap: 0.75rem; }
-        .contact-link { display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; background: #111; border: 1px solid #222; border-radius: 12px; text-decoration: none; color: #e8e8e8; transition: background 0.2s, border-color 0.2s; }
-        .contact-link:hover { background: #141414; border-color: #333; }
+        .contact-link { display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; background: #111; border: 1px solid #252525; border-radius: 12px; text-decoration: none; color: #d4d4d4; transition: background 0.2s, border-color 0.2s; }
+        .contact-link:hover { background: #151515; border-color: #333; }
         .contact-icon { font-size: 1.1rem; width: 36px; height: 36px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .contact-lbl { font-size: 0.72rem; color: #555; margin-bottom: 2px; }
-        .contact-val { font-size: 0.88rem; font-weight: 500; }
+        .contact-lbl { font-size: 0.72rem; color: #666; margin-bottom: 2px; }
+        .contact-val { font-size: 0.9rem; font-weight: 500; color: #e0e0e0; }
 
         /* GALLERY */
         .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin-top: 1.25rem; }
@@ -290,20 +371,20 @@ export default function Portfolio() {
         .gallery-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; }
         .gallery-placeholder-icon { font-size: 1.2rem; opacity: 0.2; }
         .gallery-placeholder-text { font-size: 0.6rem; color: #444; text-align: center; padding: 0 0.25rem; }
-        .gallery-caption-hover { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 1rem 0.5rem 0.4rem; font-size: 0.65rem; color: #aaa; opacity: 0; transition: opacity 0.2s; }
+        .gallery-caption-hover { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 1rem 0.5rem 0.4rem; font-size: 0.65rem; color: #bbb; opacity: 0; transition: opacity 0.2s; }
         .gallery-thumb:hover .gallery-caption-hover { opacity: 1; }
 
         /* LIGHTBOX */
         .lightbox { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.93); display: flex; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
         .lightbox img { max-width: 100%; max-height: 85vh; border-radius: 10px; display: block; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        .lightbox-caption { text-align: center; font-size: 0.82rem; color: #666; margin-top: 1rem; }
+        .lightbox-caption { text-align: center; font-size: 0.85rem; color: #777; margin-top: 1rem; }
         .lightbox-close { position: absolute; top: 1.5rem; right: 1.5rem; background: #1a1a1a; border: 1px solid #333; color: #e8e8e8; width: 36px; height: 36px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
         .lightbox-close:hover { background: #2a2a2a; }
 
         @media (max-width: 600px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
 
         /* FOOTER */
-        footer { padding: 2.5rem 1.5rem; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #444; flex-wrap: wrap; gap: 0.5rem; max-width: 900px; margin: 0 auto; }
+        footer { padding: 2.5rem 1.5rem; border-top: 1px solid #1e1e1e; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #444; flex-wrap: wrap; gap: 0.5rem; max-width: 900px; margin: 0 auto; }
 
         @media (max-width: 700px) {
           .hamburger { display: flex; }
@@ -311,12 +392,13 @@ export default function Portfolio() {
           .about-grid { grid-template-columns: 1fr; gap: 2rem; }
           .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
           .hero-stats { gap: 2rem; }
+          .edu-cert-grid { grid-template-columns: 1fr; gap: 2rem; }
         }
       `}</style>
 
       {/* NAV */}
       <nav>
-        <div className="nav-name" onClick={() => scrollTo("hero")}>Sanjey Rajkumar</div>
+        <div className="nav-name" onClick={() => scrollTo("hero")}>{ME.name}</div>
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           <span /><span /><span />
         </button>
@@ -331,9 +413,11 @@ export default function Portfolio() {
         {NAV.map(n => <button key={n} onClick={() => scrollTo(n)}>{n}</button>)}
       </div>
 
-      {/* HERO */}
-      <div id="hero" style={{ background: "#0d0d0d" }}>
-        <div className="hero">
+      {/* HERO with Matrix background */}
+      <div id="hero" className="hero-wrap">
+        <MatrixCanvas />
+        <div className="hero-fade" />
+        <div className="hero" style={{ position: "relative", zIndex: 2 }}>
           <div className="container">
             <div className="hero-label">Available for opportunities</div>
             <div className="hero-name">{ME.name}</div>
@@ -342,6 +426,7 @@ export default function Portfolio() {
             <div className="hero-btns">
               <button className="btn btn-primary" onClick={() => scrollTo("projects")}>View Projects</button>
               <button className="btn btn-secondary" onClick={() => scrollTo("contact")}>Get in Touch</button>
+              <a href="/Sanjey-CV.pdf" download className="btn btn-secondary" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>⬇ Download CV</a>
             </div>
             <div className="hero-stats">
               <div><div className="stat-n">3</div><div className="stat-l">Projects Built</div></div>
@@ -363,28 +448,7 @@ export default function Portfolio() {
               <div className="about-text">
                 <p>I'm <strong>Sanjey Krishna Rajkumar</strong> — a recent Information Systems graduate from Western Sydney University, majoring in Data Science.</p>
                 <p>I build tools that make data accessible — AI dashboards, safety platforms, sports management systems. My work bridges <strong>data, AI, and real-world business problems</strong>.</p>
-                <p>Currently exploring paths in <strong>Data Analysis and Cybersecurity</strong>, and working toward Power BI and AWS AI certifications.</p>
-              </div>
-              <div className="edu-block">
-                <div className="edu-label">Education</div>
-                <div className="edu-item">
-                  <div className="edu-dot" />
-                  <div>
-                    <div className="edu-degree">Bachelor of Information Systems</div>
-                    <div className="edu-school">Western Sydney University · Data Science</div>
-                    <div className="edu-period">2022 – 2025</div>
-                    <span className="edu-badge badge-done">Completed</span>
-                  </div>
-                </div>
-                <div className="edu-item">
-                  <div className="edu-dot" style={{ background: "#555" }} />
-                  <div>
-                    <div className="edu-degree">Master's Degree</div>
-                    <div className="edu-school">Data Science / Cybersecurity — still deciding</div>
-                    <div className="edu-period">Planned · Future</div>
-                    <span className="edu-badge badge-future">Upcoming</span>
-                  </div>
-                </div>
+                <p>Currently exploring paths in <strong>Data Analysis and Cybersecurity</strong>, and working toward my Power BI, AWS AI, and CompTIA Security+ certifications.</p>
               </div>
             </div>
             <div className="info-card">
@@ -472,20 +536,43 @@ export default function Portfolio() {
           </div>
         </Section>
 
-        {/* CERTIFICATIONS */}
-        <Section id="certifications">
-          <span className="sec-label">Certifications</span>
-          <div className="sec-title">Currently Studying</div>
-          <div className="cert-list">
-            {CERTIFICATIONS.map((c) => (
-              <div className="cert-item" key={c.name}>
-                <div>
-                  <div className="cert-name">{c.name}</div>
-                  <div className="cert-issuer">{c.issuer}</div>
-                </div>
-                <span className="cert-badge">{c.status}</span>
+        {/* EDUCATION & CERTIFICATIONS */}
+        <Section id="education">
+          <span className="sec-label">Education & Certifications</span>
+          <div className="sec-title">Qualifications</div>
+          <div className="edu-cert-grid">
+            <div>
+              <span className="subsec-label">Education</span>
+              <div className="edu-list">
+                {EDUCATION.map((e) => (
+                  <div className="edu-item" key={e.degree}>
+                    <div className="edu-dot" style={{ background: e.badge === "future" ? "#555" : "#4f9eff" }} />
+                    <div>
+                      <div className="edu-degree">{e.degree}</div>
+                      <div className="edu-school">{e.school}</div>
+                      <div className="edu-period">{e.period}</div>
+                      <span className={`edu-badge badge-${e.badge === "completed" ? "done" : "future"}`}>
+                        {e.badge === "completed" ? "Completed" : "Upcoming"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div>
+              <span className="subsec-label">Certifications — In Progress</span>
+              <div className="cert-list">
+                {CERTIFICATIONS.map((c) => (
+                  <div className="cert-item" key={c.name}>
+                    <div>
+                      <div className="cert-name">{c.name}</div>
+                      <div className="cert-issuer">{c.issuer}</div>
+                    </div>
+                    <span className="cert-badge">In Progress</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </Section>
 
@@ -493,7 +580,7 @@ export default function Portfolio() {
         <Section id="contact">
           <span className="sec-label">Contact</span>
           <div className="sec-title">Get in Touch</div>
-          <p style={{ fontSize: "0.95rem", fontWeight: 300, color: "#777", lineHeight: 1.75, marginBottom: "2rem", maxWidth: "480px" }}>
+          <p style={{ fontSize: "0.975rem", fontWeight: 300, color: "#999", lineHeight: 1.8, marginBottom: "2rem", maxWidth: "480px" }}>
             Open to roles in Data Analysis, AI Integration, Business Intelligence, or Cybersecurity. Feel free to reach out.
           </p>
           <div className="contact-links">
@@ -509,13 +596,17 @@ export default function Portfolio() {
               <div className="contact-icon">☎</div>
               <div><div className="contact-lbl">Phone</div><div className="contact-val">{ME.phone}</div></div>
             </a>
+            <a href="/Sanjey-CV.pdf" download className="contact-link" style={{ textDecoration: "none" }}>
+              <div className="contact-icon">⬇</div>
+              <div><div className="contact-lbl">Resume</div><div className="contact-val">Download CV</div></div>
+            </a>
           </div>
         </Section>
 
       </div>
 
       <footer>
-        <span>© 2026 Sanjey Rajkumar</span>
+        <span>© 2026 Sanjey Krishna Rajkumar</span>
         <span>Sydney, NSW</span>
       </footer>
 
