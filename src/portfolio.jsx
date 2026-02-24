@@ -34,6 +34,7 @@ const PROJECTS = [
     desc: "AI-powered platform analysing 12+ months of Google Analytics data for SMEs. Integrated OpenAI API so users can ask plain-English questions and get instant insights.",
     tech: ["OpenAI API", "React", "Python", "PostgreSQL"],
     highlight: "35% lift in campaign effectiveness",
+    score: "91/100",
     images: CODI_IMAGES,
   },
   {
@@ -235,7 +236,7 @@ export default function Portfolio() {
     setMenuOpen(false);
   };
 
-  const NAV = ["about", "projects", "experience", "education", "contact"];
+  const NAV = ["about", "education", "projects", "experience", "contact"];
 
   return (
     <>
@@ -469,6 +470,46 @@ export default function Portfolio() {
           </div>
         </Section>
 
+        {/* EDUCATION & CERTIFICATIONS */}
+        <Section id="education">
+          <span className="sec-label">Education & Certifications</span>
+          <div className="sec-title">Qualifications</div>
+          <div className="edu-cert-grid">
+            <div>
+              <span className="subsec-label">Education</span>
+              <div className="edu-list">
+                {EDUCATION.map((e) => (
+                  <div className="edu-item" key={e.degree}>
+                    <div className="edu-dot" style={{ background: e.badge === "future" ? "#555" : "#4f9eff" }} />
+                    <div>
+                      <div className="edu-degree">{e.degree}</div>
+                      <div className="edu-school">{e.school}</div>
+                      <div className="edu-period">{e.period}</div>
+                      <span className={`edu-badge badge-${e.badge === "completed" ? "done" : "future"}`}>
+                        {e.badge === "completed" ? "Completed" : "Upcoming"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <span className="subsec-label">Certifications — In Progress</span>
+              <div className="cert-list">
+                {CERTIFICATIONS.map((c) => (
+                  <div className="cert-item" key={c.name}>
+                    <div>
+                      <div className="cert-name">{c.name}</div>
+                      <div className="cert-issuer">{c.issuer}</div>
+                    </div>
+                    <span className="cert-badge">In Progress</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Section>
+
         {/* PROJECTS */}
         <Section id="projects">
           <span className="sec-label">Projects</span>
@@ -477,7 +518,14 @@ export default function Portfolio() {
             {PROJECTS.map((p) => (
               <div className="project-item" key={p.title}>
                 <div className="proj-header">
-                  <div className="proj-title">{p.title}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+                    <div className="proj-title">{p.title}</div>
+                    {p.score && (
+                      <span style={{ fontSize: "0.72rem", fontWeight: 600, padding: "3px 10px", borderRadius: "4px", background: "rgba(52,211,153,0.1)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                        🎓 {p.score}
+                      </span>
+                    )}
+                  </div>
                   <span className="proj-tag">{p.tag}</span>
                 </div>
                 <p className="proj-desc">{p.desc}</p>
@@ -536,46 +584,6 @@ export default function Portfolio() {
           </div>
         </Section>
 
-        {/* EDUCATION & CERTIFICATIONS */}
-        <Section id="education">
-          <span className="sec-label">Education & Certifications</span>
-          <div className="sec-title">Qualifications</div>
-          <div className="edu-cert-grid">
-            <div>
-              <span className="subsec-label">Education</span>
-              <div className="edu-list">
-                {EDUCATION.map((e) => (
-                  <div className="edu-item" key={e.degree}>
-                    <div className="edu-dot" style={{ background: e.badge === "future" ? "#555" : "#4f9eff" }} />
-                    <div>
-                      <div className="edu-degree">{e.degree}</div>
-                      <div className="edu-school">{e.school}</div>
-                      <div className="edu-period">{e.period}</div>
-                      <span className={`edu-badge badge-${e.badge === "completed" ? "done" : "future"}`}>
-                        {e.badge === "completed" ? "Completed" : "Upcoming"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <span className="subsec-label">Certifications — In Progress</span>
-              <div className="cert-list">
-                {CERTIFICATIONS.map((c) => (
-                  <div className="cert-item" key={c.name}>
-                    <div>
-                      <div className="cert-name">{c.name}</div>
-                      <div className="cert-issuer">{c.issuer}</div>
-                    </div>
-                    <span className="cert-badge">In Progress</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Section>
-
         {/* CONTACT */}
         <Section id="contact">
           <span className="sec-label">Contact</span>
@@ -591,10 +599,6 @@ export default function Portfolio() {
             <a href={ME.linkedin} target="_blank" rel="noreferrer" className="contact-link">
               <div className="contact-icon">in</div>
               <div><div className="contact-lbl">LinkedIn</div><div className="contact-val">linkedin.com/in/sanjey-rajkumar</div></div>
-            </a>
-            <a href={`tel:${ME.phone}`} className="contact-link">
-              <div className="contact-icon">☎</div>
-              <div><div className="contact-lbl">Phone</div><div className="contact-val">{ME.phone}</div></div>
             </a>
             <a href="/Sanjey-CV.pdf" download className="contact-link" style={{ textDecoration: "none" }}>
               <div className="contact-icon">⬇</div>
