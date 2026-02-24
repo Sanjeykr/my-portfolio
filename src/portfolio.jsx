@@ -43,6 +43,7 @@ const PROJECTS = [
     desc: "A platform tackling harassment faced by 83% of women aged 18–24. Features real-time safety mapping, walking group coordination, and institutional feedback systems.",
     tech: ["React", "Google Maps API", "Node.js", "MongoDB"],
     highlight: "Selected for investor presentation",
+    score: "87/100",
   },
   {
     title: "Athlete Pro",
@@ -50,6 +51,7 @@ const PROJECTS = [
     desc: "Web platform for coaches, athletes, and clubs with centralised performance tracking. Role-based dashboards, health monitoring, nutrition planning and injury prevention.",
     tech: ["React", "MySQL", "Python", "Chart.js"],
     highlight: "3 user roles · full analytics suite",
+    score: "85/100",
   },
 ];
 
